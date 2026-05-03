@@ -15,11 +15,21 @@ body {
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     width: 100%;
-    max-width: 450px;
+    max-width: 520px;
     border-top: 5px solid #005088;
+    margin: 0 20px;
 }
 
-h2 { color: #005088; text-align: center; }
+h2 { color: #005088; text-align: center; margin-bottom: 24px; }
+
+.qr-area {
+    margin-top: 30px;
+    text-align: center;
+    padding: 20px;
+    border: 2px dashed #005088;
+    border-radius: 10px;
+    background-color: #f8fafc;
+}
 
 fieldset {
     border: 2px solid #e2e8f0;

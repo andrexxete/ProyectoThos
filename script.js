@@ -194,3 +194,33 @@ function procesarLectura(data) {
         mostrarToast("Falla de seguridad", "error");
     }
 }
+
+// Añadimos este método a la clase Visita que ya tenías
+// (Puedes simplemente agregar estas líneas a tu archivo script.js)
+
+function confirmarAcceso(idVisita) {
+    // Criterio 1: Captura automática del tiempo
+    const ahora = new Date();
+    const horaFormateada = ahora.toLocaleTimeString();
+    const fechaFormateada = ahora.toLocaleDateString();
+
+    // Simulamos la actualización en la base de datos (Criterio 4)
+    // En un sistema real, aquí haríamos un fetch/patch al servidor
+    console.log(`[LOG SEGURIDAD] Visita ${idVisita} - Ingreso confirmado a las ${horaFormateada}`);
+
+    // Criterio 3: Confirmación visual (Testigo en tablero)
+    const pTimestamp = document.getElementById('timestamp-confirmacion');
+    pTimestamp.innerText = `Ingreso registrado: ${fechaFormateada} - ${horaFormateada}`;
+    
+    mostrarToast(`Entrada registrada a las ${horaFormateada}`, "exito");
+    
+    // Bloqueamos el botón para evitar doble registro
+    document.getElementById('btn-confirmar-ingreso').disabled = true;
+    document.getElementById('btn-confirmar-ingreso').innerText = "Ingreso Procesado";
+}
+
+// Conectamos el botón de la interfaz con la lógica
+document.getElementById('btn-confirmar-ingreso').addEventListener('click', () => {
+    // Aquí pasaríamos el ID de la visita capturado del QR
+    confirmarAcceso("VIS-ACTUAL"); 
+});

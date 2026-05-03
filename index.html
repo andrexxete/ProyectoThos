@@ -38,14 +38,14 @@
             <button type="submit">Registrar Visita</button>
             <button type="button" onclick="abrirEscaner()" style="background-color: #11caa0; margin-top: 10px;">Abrir Escáner QR (Guardia)</button>
         </form>
-    </div>
 
-    <div id="contenedor-qr" class="qr-area" style="display: none;">
-    <h3>Su Llave de Acceso (QR)</h3>
-    <div id="codigo-qr"></div>
-    <p>Presente este código en la entrada principal.</p>
-    <button onclick="limpiarPantalla()">Nuevo Registro</button>
-</div>
+        <div id="contenedor-qr" class="qr-area" style="display: none;">
+            <h3>Su Llave de Acceso (QR)</h3>
+            <div id="codigo-qr"></div>
+            <p>Presente este código en la entrada principal.</p>
+            <button onclick="limpiarPantalla()">Nuevo Registro</button>
+        </div>
+    </div>
 
 <div id="estacion-guardia" class="contenedor" style="display:none; margin-top: 20px;">
     <h3>Estación de Seguridad</h3>
@@ -54,6 +54,7 @@
     <div id="resultado-escaneo" class="resultado-panel" style="display:none;">
         <p id="info-visitante"></p>
         <button id="btn-confirmar-ingreso" class="btn-success">Confirmar Ingreso</button>
+        <p id="timestamp-confirmacion" style="font-weight: bold; color: #64748b; font-size: 0.9em;"></p>
     </div>
     
     <button onclick="volverAlMenu()" class="btn-secundario">Cerrar Escáner</button>

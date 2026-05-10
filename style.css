@@ -1,12 +1,16 @@
+/* =========================================
+   DISEÑO BASE Y ESTRUCTURA
+   ========================================= */
 body {
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #cbd5e1;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     min-height: 100vh;
     margin: 0;
-    padding: 40px 0;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .contenedor {
@@ -15,22 +19,19 @@ body {
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     width: 100%;
-    max-width: 520px;
+    max-width: 450px;
     border-top: 5px solid #005088;
-    margin: 0 20px;
 }
 
-h2 { color: #005088; text-align: center; margin-bottom: 24px; }
-
-.qr-area {
-    margin-top: 30px;
-    text-align: center;
-    padding: 20px;
-    border: 2px dashed #005088;
-    border-radius: 10px;
-    background-color: #f8fafc;
+.contenedor.dashboard {
+    max-width: 800px;
 }
 
+h2, h3 { color: #005088; text-align: center; margin-top: 0; }
+
+/* =========================================
+   FORMULARIO Y CAMPOS (H1, H2)
+   ========================================= */
 fieldset {
     border: 2px solid #e2e8f0;
     border-radius: 8px;
@@ -38,7 +39,8 @@ fieldset {
     margin-bottom: 15px;
 }
 
-legend { color: #11caa0; font-weight: bold; }
+legend { color: #11caa0; font-weight: bold; padding: 0 10px; }
+label { display: block; margin-bottom: 5px; color: #334155; font-weight: 500; font-size: 14px; }
 
 input {
     width: 100%;
@@ -48,31 +50,83 @@ input {
     border-radius: 5px;
     box-sizing: border-box;
 }
+input:focus { outline: none; border-color: #11caa0; box-shadow: 0 0 5px rgba(17, 202, 160, 0.5); }
+.campo-bloqueado { background-color: #f1f5f9; cursor: not-allowed; }
 
+/* Buscador avanzado */
+.buscador-container { position: relative; margin-bottom: 15px; }
+.sugerencias {
+    list-style: none; padding: 0; margin: 0; position: absolute; width: 100%;
+    background: white; border: 1px solid #cbd5e1; border-radius: 5px;
+    max-height: 150px; overflow-y: auto; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.sugerencias li { padding: 12px; border-bottom: 1px solid #e2e8f0; cursor: pointer; font-size: 14px; }
+.sugerencias li:hover { background-color: #f1f5f9; }
+.sugerencias li.restringido { color: #ef4444; background-color: #fee2e2; cursor: not-allowed; font-weight: bold; }
+
+/* =========================================
+   BOTONES
+   ========================================= */
 button {
+    width: 100%; padding: 12px; background-color: #005088; color: white;
+    border: none; border-radius: 5px; font-size: 16px; font-weight: bold;
+    cursor: pointer; transition: background 0.3s;
+}
+button:hover { background-color: #003a66; }
+button:disabled { background-color: #94a3b8; cursor: not-allowed; }
+.btn-secundario { background-color: #64748b; }
+.btn-secundario:hover { background-color: #475569; }
+.btn-success { background-color: #11caa0; }
+
+/* =========================================
+   MÓDULOS DE ESCÁNER Y QR (H3, H4, H5)
+   ========================================= */
+.qr-area { text-align: center; display: flex; flex-direction: column; align-items: center; }
+#codigo-qr { display: flex; justify-content: center; margin: 20px 0; padding: 15px; background: white; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+
+/* Ergonomía: Efecto Espejo para cámara frontal */
+#lector-qr video {
+    transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    border-radius: 10px;
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.3);
+}
+
+.resultado-panel { margin-top: 15px; padding: 15px; border-radius: 8px; text-align: center; }
+.acceso-autorizado { background-color: #dcfce7; border: 2px solid #11caa0; color: #065f46; }
+.acceso-denegado { background-color: #fee2e2; border: 2px solid #ef4444; color: #991b1b; }
+.texto-timestamp { font-weight: bold; color: #64748b; font-size: 0.9em; margin: 10px 0; }
+
+/* =========================================
+   DASHBOARD Y TABLA
+   ========================================= */
+.tabla-telemetria {
     width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.tabla-telemetria th, .tabla-telemetria td {
     padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.tabla-telemetria th {
     background-color: #005088;
     color: white;
-    border: none;
-    border-radius: 5px;
     font-weight: bold;
-    cursor: pointer;
 }
 
-/* Estilo del Testigo (Toast) */
+.alerta-tiempo {
+    color: #ef4444;
+    font-weight: bold;
+}
 #toast {
-    visibility: hidden;
-    min-width: 250px;
-    color: #fff;
-    text-align: center;
-    border-radius: 5px;
-    padding: 15px;
-    position: fixed;
-    top: 20px;
-    right: 20px;
+    visibility: hidden; min-width: 250px; color: #fff; text-align: center;
+    border-radius: 5px; padding: 15px; position: fixed; top: 20px; right: 20px;
+    font-size: 15px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 9999;
 }
-
 #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
 .toast-success { background-color: #11caa0; }
 .toast-error { background-color: #ef4444; }
@@ -80,30 +134,46 @@ button {
 @keyframes fadein { from {top: 0; opacity: 0;} to {top: 20px; opacity: 1;} }
 @keyframes fadeout { from {top: 20px; opacity: 1;} to {top: 0; opacity: 0;} }
 
-.qr-area {
-    margin-top: 20px;
-    text-align: center;
-    padding: 20px;
-    border: 2px dashed #005088;
-    border-radius: 10px;
+/* =========================================
+   ESTILOS DE TELEMETRÍA (TABLAS DASHBOARD)
+   ========================================= */
+.tabla-telemetria {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background-color: white;
+    font-size: 14px;
+}
+
+.tabla-telemetria th, .tabla-telemetria td {
+    border: 1px solid #e2e8f0;
+    padding: 12px;
+    text-align: left;
+}
+
+.tabla-telemetria th {
+    background-color: #005088;
+    color: white;
+    font-weight: bold;
+}
+
+.tabla-telemetria tr:nth-child(even) {
     background-color: #f8fafc;
 }
 
-#codigo-qr {
-    display: flex;
-    justify-content: center;
-    margin: 15px 0;
+.tabla-telemetria tr:hover {
+    background-color: #f1f5f9;
 }
 
-.resultado-panel {
-    margin-top: 15px;
-    padding: 15px;
-    border-radius: 8px;
-    text-align: center;
+/* Indicador de exceso de revoluciones (Tiempo superado) */
+.alerta-tiempo {
+    color: #ef4444;
+    font-weight: bold;
+    animation: parpadeo 1s infinite;
 }
 
-.acceso-autorizado { background-color: #dcfce7; border: 2px solid #11caa0; color: #065f46; }
-.acceso-denegado { background-color: #fee2e2; border: 2px solid #ef4444; color: #991b1b; }
-
-.btn-success { background-color: #11caa0; color: white; margin-top: 10px; }
-.btn-secundario { background: #64748b; color: white; margin-top: 20px; }
+@keyframes parpadeo {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}

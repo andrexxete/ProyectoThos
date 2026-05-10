@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THOS - Registro de Visitante</title>
+    <title>THOS - Control de Acceso</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body>
 
     <div id="toast">Mensaje de alerta</div>
 
-    <div id="contenedor-principal" class="contenedor">
+    <div class="contenedor" id="modulo-registro" style="display: none;">
         <h2>THOS - Nuevo Registro</h2>
 
         <form id="formulario-registro">
@@ -28,42 +30,80 @@
 
             <fieldset>
                 <legend>Detalles de la Visita</legend>
-                <label for="paciente">Paciente a Visitar</label>
-                <input type="text" id="paciente" required>
+                
+                <label for="buscar-paciente">Buscar Paciente (Catálogo):</label>
+                <div class="buscador-container">
+                    <input type="text" id="buscar-paciente" placeholder="Ingrese nombre (Ej: Carlos...)" onkeyup="filtrarPacientes()">
+                    <ul id="lista-sugerencias" class="sugerencias"></ul>
+                </div>
 
-                <label for="area">Área de Destino</label>
-                <input type="text" id="area" required>
+                <label for="paciente">Paciente Seleccionado:</label>
+                <input type="text" id="paciente" readonly required class="campo-bloqueado">
+
+                <label for="area">Área de Destino:</label>
+                <input type="text" id="area" readonly required class="campo-bloqueado">
             </fieldset>
 
-            <button type="submit">Registrar Visita</button>
-            <button type="button" onclick="abrirEscaner()" style="background-color: #11caa0; margin-top: 10px;">Abrir Escáner QR (Guardia)</button>
+            <button type="submit">Registrar y Generar Llave</button>
         </form>
+        
+        <button onclick="abrirEscaner()" class="btn-secundario" style="margin-top: 15px;">Cambiar a Modo Guardia (Escáner)</button>
+    </div>
 
-        <div id="contenedor-qr" class="qr-area" style="display: none;">
-            <h3>Su Llave de Acceso (QR)</h3>
-            <div id="codigo-qr"></div>
-            <p>Presente este código en la entrada principal.</p>
-            <button onclick="limpiarPantalla()">Nuevo Registro</button>
+    <div class="contenedor qr-area" id="contenedor-qr" style="display: none;">
+        <h3>Su Llave de Acceso (QR)</h3>
+        <div id="codigo-qr"></div>
+        <p>Presente este código en la entrada principal.</p>
+        <button onclick="limpiarPantalla()">Volver al Registro</button>
+    </div>
+
+    <div class="contenedor" id="estacion-guardia" style="display:none;">
+        <h3>Estación de Seguridad</h3>
+        
+        <div id="lector-qr" style="width: 100%;"></div>
+        
+        <div id="resultado-escaneo" class="resultado-panel" style="display:none;">
+            <p id="info-visitante"></p>
+            <p id="timestamp-confirmacion" class="texto-timestamp"></p>
+            <button id="btn-confirmar-ingreso" class="btn-success">Confirmar Ingreso</button>
         </div>
+        
+        <button onclick="volverAlMenu()" class="btn-secundario" style="margin-top: 20px;">Cerrar Escáner</button>
+    </div>
+    
+    <div class="contenedor" id="menu-principal" style="display: block;">
+        <h2>Menú Principal THOS</h2>
+        <button onclick="abrirRegistro()" class="btn-secundario" style="margin-bottom: 10px;">Nuevo Registro de Visitante</button>
+        <button onclick="abrirEscaner()" class="btn-secundario" style="margin-bottom: 10px;">Modo Guardia (Escáner)</button>
+        <button onclick="abrirDashboard()" class="btn-secundario" style="background-color: #0f172a;">Ver Panel de Monitoreo (Dashboard)</button>
     </div>
 
-<div id="estacion-guardia" class="contenedor" style="display:none; margin-top: 20px;">
-    <h3>Estación de Seguridad</h3>
-    <div id="lector-qr" style="width: 100%; border-radius: 10px; overflow: hidden;"></div>
+    <div class="contenedor dashboard" id="modulo-dashboard" style="display:none;">
+    <h2>Panel de Visitantes Activos</h2>
     
-    <div id="resultado-escaneo" class="resultado-panel" style="display:none;">
-        <p id="info-visitante"></p>
-        <button id="btn-confirmar-ingreso" class="btn-success">Confirmar Ingreso</button>
-        <p id="timestamp-confirmacion" style="font-weight: bold; color: #64748b; font-size: 0.9em;"></p>
+    <div class="buscador-container">
+        <input type="text" id="filtro-area" placeholder="Filtrar por Área o Pabellón (Ej: UCI)..." onkeyup="renderizarTablaActivos()">
     </div>
-    
-    <button onclick="volverAlMenu()" class="btn-secundario">Cerrar Escáner</button>
+
+    <div style="overflow-x: auto;">
+        <table class="tabla-telemetria">
+            <thead>
+                <tr>
+                    <th>ID Visita</th>
+                    <th>Visitante</th>
+                    <th>Área Destino</th>
+                    <th>Ingreso</th>
+                    <th>Tiempo</th>
+                </tr>
+            </thead>
+            <tbody id="cuerpo-tabla-activos">
+                </tbody>
+        </table>
+    </div>
+
+    <button onclick="cerrarDashboard()" class="btn-secundario" style="margin-top: 20px;">Volver al Menú Principal</button>
 </div>
 
-<script src="https://unpkg.com/html5-qrcode"></script>
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

@@ -1,109 +1,214 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THOS - Control de Acceso</title>
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>THOS - Total Hospital Security</title>
+    <link rel="stylesheet" href="style.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
-</head>
-<body>
-
+  </head>
+  <body>
     <div id="toast">Mensaje de alerta</div>
 
-    <div class="contenedor" id="modulo-registro" style="display: none;">
-        <h2>THOS - Nuevo Registro</h2>
+    <div class="contenedor" id="modulo-registro">
+      <h2>THOS - Recepción</h2>
 
-        <form id="formulario-registro">
-            <fieldset>
-                <legend>Datos del Visitante</legend>
-                <label for="nombre">Nombre Completo</label>
-                <input type="text" id="nombre" required>
+      <form id="formulario-registro">
+        <fieldset>
+          <legend>Datos del Visitante</legend>
+          <label for="nombre">Nombre Completo</label>
+          <input type="text" id="nombre" required />
 
-                <label for="documento">Documento de Identidad</label>
-                <input type="text" id="documento" required>
+          <label for="documento">Documento de Identidad</label>
+          <input type="text" id="documento" required />
 
-                <label for="telefono">Teléfono (10 dígitos)</label>
-                <input type="tel" id="telefono" required>
-            </fieldset>
+          <label for="telefono">Teléfono (10 dígitos)</label>
+          <input type="tel" id="telefono" required />
+        </fieldset>
 
-            <fieldset>
-                <legend>Detalles de la Visita</legend>
-                
-                <label for="buscar-paciente">Buscar Paciente (Catálogo):</label>
-                <div class="buscador-container">
-                    <input type="text" id="buscar-paciente" placeholder="Ingrese nombre (Ej: Carlos...)" onkeyup="filtrarPacientes()">
-                    <ul id="lista-sugerencias" class="sugerencias"></ul>
-                </div>
+        <fieldset>
+          <legend>Detalles de la Visita</legend>
 
-                <label for="paciente">Paciente Seleccionado:</label>
-                <input type="text" id="paciente" readonly required class="campo-bloqueado">
+          <label for="buscar-paciente">Paciente (Catálogo):</label>
+          <div class="buscador-container" id="buscador-pacientes">
+            <input
+              type="text"
+              id="buscar-paciente"
+              placeholder="Toca para ver todos los pacientes o escribe para filtrar…"
+              autocomplete="off"
+              onkeyup="filtrarPacientes()"
+              onfocus="mostrarCatalogoPacientes()"
+            />
+            <ul id="lista-sugerencias" class="sugerencias" role="listbox"></ul>
+          </div>
 
-                <label for="area">Área de Destino:</label>
-                <input type="text" id="area" readonly required class="campo-bloqueado">
-            </fieldset>
+          <label for="paciente">Paciente Seleccionado:</label>
+          <input
+            type="text"
+            id="paciente"
+            readonly
+            required
+            class="campo-bloqueado"
+          />
 
-            <button type="submit">Registrar y Generar Llave</button>
-        </form>
-        
-        <button onclick="abrirEscaner()" class="btn-secundario" style="margin-top: 15px;">Cambiar a Modo Guardia (Escáner)</button>
+          <label for="area">Área de Destino:</label>
+          <input
+            type="text"
+            id="area"
+            readonly
+            required
+            class="campo-bloqueado"
+          />
+        </fieldset>
+
+        <button type="submit">Registrar y Generar Llave</button>
+      </form>
+
+      <div
+        style="
+          margin-top: 20px;
+          border-top: 1px solid #cbd5e1;
+          padding-top: 15px;
+        "
+      >
+        <button onclick="abrirGuardiaEnNuevaPestaña()" class="btn-secundario">
+          📱 Modo Guardia (Escáner)
+        </button>
+        <button
+          onclick="abrirDashboard()"
+          class="btn-secundario"
+          style="margin-top: 10px; background-color: #0f172a"
+        >
+          📊 Panel de Monitoreo (Dashboard)
+        </button>
+        <button
+          onclick="abrirModuloReportes()"
+          class="btn-secundario"
+          style="margin-top: 10px; background-color: #475569"
+        >
+          📑 Descargar Reportes
+        </button>
+      </div>
     </div>
 
-    <div class="contenedor qr-area" id="contenedor-qr" style="display: none;">
-        <h3>Su Llave de Acceso (QR)</h3>
-        <div id="codigo-qr"></div>
-        <p>Presente este código en la entrada principal.</p>
-        <button onclick="limpiarPantalla()">Volver al Registro</button>
+    <div class="contenedor qr-area" id="contenedor-qr" style="display: none">
+      <h3>Su Llave de Acceso (QR)</h3>
+      <div id="codigo-qr"></div>
+      <p>Presente este código al guardia de seguridad.</p>
+      <button onclick="limpiarPantalla()">Volver a Recepción</button>
     </div>
 
-    <div class="contenedor" id="estacion-guardia" style="display:none;">
-        <h3>Estación de Seguridad</h3>
-        
-        <div id="lector-qr" style="width: 100%;"></div>
-        
-        <div id="resultado-escaneo" class="resultado-panel" style="display:none;">
-            <p id="info-visitante"></p>
-            <p id="timestamp-confirmacion" class="texto-timestamp"></p>
-            <button id="btn-confirmar-ingreso" class="btn-success">Confirmar Ingreso</button>
-        </div>
-        
-        <button onclick="volverAlMenu()" class="btn-secundario" style="margin-top: 20px;">Cerrar Escáner</button>
-    </div>
-    
-    <div class="contenedor" id="menu-principal" style="display: block;">
-        <h2>Menú Principal THOS</h2>
-        <button onclick="abrirRegistro()" class="btn-secundario" style="margin-bottom: 10px;">Nuevo Registro de Visitante</button>
-        <button onclick="abrirEscaner()" class="btn-secundario" style="margin-bottom: 10px;">Modo Guardia (Escáner)</button>
-        <button onclick="abrirDashboard()" class="btn-secundario" style="background-color: #0f172a;">Ver Panel de Monitoreo (Dashboard)</button>
+    <div class="contenedor" id="estacion-guardia" style="display: none">
+      <h3>Estación de Seguridad</h3>
+
+      <div id="lector-qr" style="width: 100%"></div>
+
+      <div id="resultado-escaneo" class="resultado-panel" style="display: none">
+        <p id="info-visitante"></p>
+        <p id="timestamp-confirmacion" class="texto-timestamp"></p>
+        <button id="btn-confirmar-ingreso" class="btn-success">
+          Confirmar Ingreso
+        </button>
+      </div>
+
+      <div id="acciones-post-qr" class="acciones-post-qr" style="display: none">
+        <p class="pregunta-post-qr">¿Desea leer otro código QR o cerrar el escáner?</p>
+        <button type="button" id="btn-escanear-otro" class="btn-success">
+          Escanear otro QR
+        </button>
+        <button
+          type="button"
+          id="btn-cerrar-desde-post"
+          class="btn-secundario"
+          style="margin-top: 10px"
+        >
+          Cerrar escáner
+        </button>
+      </div>
+
+      <button
+        onclick="volverAlMenu('estacion-guardia')"
+        class="btn-secundario"
+        style="margin-top: 20px"
+      >
+        Cerrar Escáner
+      </button>
     </div>
 
-    <div class="contenedor dashboard" id="modulo-dashboard" style="display:none;">
-    <h2>Panel de Visitantes Activos</h2>
-    
-    <div class="buscador-container">
-        <input type="text" id="filtro-area" placeholder="Filtrar por Área o Pabellón (Ej: UCI)..." onkeyup="renderizarTablaActivos()">
-    </div>
+    <div
+      class="contenedor"
+      id="modulo-dashboard"
+      style="display: none; max-width: 800px"
+    >
+      <h2>Visitantes Activos</h2>
 
-    <div style="overflow-x: auto;">
+      <div class="buscador-container">
+        <input
+          type="text"
+          id="filtro-area"
+          placeholder="Filtrar por Área (Ej: UCI)..."
+          onkeyup="renderizarTablaActivos()"
+        />
+      </div>
+
+      <div style="overflow-x: auto">
         <table class="tabla-telemetria">
-            <thead>
-                <tr>
-                    <th>ID Visita</th>
-                    <th>Visitante</th>
-                    <th>Área Destino</th>
-                    <th>Ingreso</th>
-                    <th>Tiempo</th>
-                </tr>
-            </thead>
-            <tbody id="cuerpo-tabla-activos">
-                </tbody>
+          <thead>
+            <tr>
+              <th>ID Visita</th>
+              <th>Visitante</th>
+              <th>Área Destino</th>
+              <th>Ingreso</th>
+              <th>Tiempo</th>
+            </tr>
+          </thead>
+          <tbody id="cuerpo-tabla-activos"></tbody>
         </table>
+      </div>
+
+      <button
+        onclick="
+          volverAlMenu('modulo-dashboard');
+          clearInterval(intervaloTelemetria);
+        "
+        class="btn-secundario"
+        style="margin-top: 20px"
+      >
+        Volver al Menú
+      </button>
     </div>
 
-    <button onclick="cerrarDashboard()" class="btn-secundario" style="margin-top: 20px;">Volver al Menú Principal</button>
-</div>
+    <div class="contenedor" id="modulo-reportes" style="display: none">
+      <h2>Exportar Historial</h2>
+
+      <fieldset>
+        <legend>Filtros del Escáner</legend>
+        <label for="filtro-estado-reporte">Estado de la Visita:</label>
+        <select
+          id="filtro-estado-reporte"
+          style="width: 100%; padding: 10px; margin-bottom: 15px"
+        >
+          <option value="TODOS">Todos los registros</option>
+          <option value="Dentro del Hospital">
+            Activos (Dentro del Hospital)
+          </option>
+          <option value="Registrado">Pendientes de Ingreso</option>
+        </select>
+      </fieldset>
+
+      <button onclick="generarReporteCSV()" class="btn-success">
+        Descargar Reporte (CSV)
+      </button>
+      <button
+        onclick="volverAlMenu('modulo-reportes')"
+        class="btn-secundario"
+        style="margin-top: 15px"
+      >
+        Volver al Menú
+      </button>
+    </div>
 
     <script src="script.js"></script>
-</body>
+  </body>
 </html>

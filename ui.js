@@ -35,7 +35,6 @@ const UIController = {
         document.getElementById(moduloActual).style.display = "none";
         document.getElementById('modulo-registro').style.display = "block";
         document.getElementById('formulario-registro').reset();
-        UIController.db._inicializarBodega(); // Reinicializar en caso de borrado
         UIController.cargarPacientes(); // Recargar pacientes
     },
 
